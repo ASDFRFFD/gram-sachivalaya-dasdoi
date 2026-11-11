@@ -196,9 +196,8 @@ body {
     gap: 8px;
     padding: 6px 16px;
     border-radius: 999px;
-    background: rgba(15, 23, 42, 0.7);
+    background: rgba(15, 23, 42, 0.92);
     border: 1px solid var(--border-medium);
-    backdrop-filter: blur(8px);
     margin-bottom: 1.5rem;
 }
 
@@ -370,9 +369,7 @@ body {
     align-items: center;
     gap: 12px;
     cursor: pointer;
-    background: rgba(10, 16, 26, 0.65);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: rgba(10, 16, 26, 0.92);
     padding: 8px 16px;
     border-radius: 999px;
     border: 1px solid var(--border-subtle);
@@ -381,7 +378,7 @@ body {
 
 .hud-brand:hover {
     border-color: var(--border-amber);
-    background: rgba(15, 23, 42, 0.85);
+    background: rgba(15, 23, 42, 0.96);
 }
 
 .hud-emblem {
@@ -417,9 +414,7 @@ body {
     display: flex;
     align-items: center;
     gap: 6px;
-    background: rgba(10, 16, 26, 0.7);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+    background: rgba(10, 16, 26, 0.92);
     padding: 6px 8px;
     border-radius: 999px;
     border: 1px solid var(--border-subtle);
@@ -465,9 +460,7 @@ body {
     align-items: center;
     gap: 8px;
     padding: 8px 14px;
-    background: rgba(10, 16, 26, 0.7);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: rgba(10, 16, 26, 0.90);
     border: 1px solid var(--border-subtle);
     border-radius: 999px;
     color: var(--text-muted);
@@ -524,9 +517,7 @@ body {
 
 .action-hud-btn {
     padding: 8px 16px;
-    background: rgba(10, 16, 26, 0.7);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: rgba(10, 16, 26, 0.90);
     border: 1px solid var(--border-subtle);
     border-radius: 999px;
     color: var(--text-dim);
@@ -580,9 +571,7 @@ body {
     align-items: center;
     gap: 10px;
     padding: 8px 18px;
-    background: rgba(10, 16, 26, 0.75);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: rgba(10, 16, 26, 0.92);
     border: 1px solid var(--border-subtle);
     border-radius: 999px;
     font-size: 0.82rem;
@@ -624,9 +613,7 @@ body {
 
 /* Live CAD Blueprint Floor Plan */
 .hud-blueprint-widget {
-    background: rgba(10, 16, 26, 0.85);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+    background: rgba(10, 16, 26, 0.94);
     border: 1px solid var(--border-subtle);
     border-radius: 12px;
     padding: 10px 14px 12px;
@@ -833,13 +820,12 @@ body {
 .term-char {
     display: inline;
     color: #f1f5f9;
-    text-shadow: 0 0 14px rgba(245, 158, 11, 0.4), 0 0 35px rgba(0, 0, 0, 0.95);
-    transition: color 0.25s ease, text-shadow 0.25s ease;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
 }
 
 .term-char.just-typed {
     color: #ffffff;
-    text-shadow: 0 0 18px #ffffff, 0 0 25px var(--amber-bright);
+    text-shadow: 0 0 8px var(--amber-bright);
 }
 
 .term-cursor {
@@ -926,9 +912,7 @@ body {
     align-items: center;
     gap: 8px;
     padding: 10px 22px;
-    background: rgba(7, 11, 18, 0.88);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: rgba(8, 12, 20, 0.94);
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 999px;
     color: #f1f5f9;
@@ -1011,13 +995,15 @@ body {
 
 .spatial-hotspot {
     position: absolute;
+    top: 0;
+    left: 0;
     pointer-events: auto;
     cursor: pointer;
-    transform: translate(-50%, -50%);
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: opacity 0.4s ease, transform 0.3s ease;
+    will-change: transform, opacity;
+    transition: opacity 0.25s ease;
 }
 
 .hotspot-beacon-ring {
@@ -1053,16 +1039,14 @@ body {
     top: 50%;
     transform: translateY(-50%) translateX(-8px);
     white-space: nowrap;
-    background: rgba(10, 16, 26, 0.88);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+    background: rgba(10, 16, 26, 0.95);
     border: 1px solid var(--border-amber);
     padding: 8px 14px;
     border-radius: 8px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
     opacity: 0;
     pointer-events: none;
-    transition: all 0.25s var(--ease-out-expo);
+    transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 .spatial-hotspot:hover .hotspot-tooltip {
@@ -1095,13 +1079,11 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.65);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    background: rgba(0, 0, 0, 0.82);
     z-index: 200;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.4s ease;
+    transition: opacity 0.3s ease;
     display: flex;
     justify-content: flex-end;
 }
@@ -1512,9 +1494,7 @@ body {
         scrollbar-width: none;
         padding: 6px 12px;
         gap: 6px;
-        background: rgba(4, 6, 9, 0.78);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
+        background: rgba(4, 6, 9, 0.94);
         border-bottom: 1px solid rgba(255, 255, 255, 0.06);
         z-index: 55;
     }
@@ -1589,9 +1569,7 @@ body {
         right: 10px;
         width: calc(100% - 20px);
         max-width: 100%;
-        background: rgba(4, 6, 9, 0.72);
-        backdrop-filter: blur(14px);
-        -webkit-backdrop-filter: blur(14px);
+        background: rgba(4, 6, 9, 0.94);
         border: 1px solid rgba(255, 255, 255, 0.08);
         border-radius: 12px;
         padding: 12px 14px 14px;
@@ -1684,10 +1662,8 @@ body {
         padding: 4px 8px;
         left: 36px;
         max-width: 160px;
-        background: rgba(6, 10, 16, 0.88);
+        background: rgba(6, 10, 16, 0.95);
         border: 1px solid rgba(245, 158, 11, 0.35);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
     }
     .tooltip-title {
         font-size: 0.72rem;

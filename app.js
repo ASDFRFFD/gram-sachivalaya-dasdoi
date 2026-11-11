@@ -67,6 +67,7 @@
 
             osc.connect(gain);
             gain.connect(ctx.destination);
+            osc.onended = () => { try { osc.disconnect(); gain.disconnect(); } catch (e) {} };
             osc.start(now);
             osc.stop(now + 0.02);
         } catch (e) {}
@@ -94,6 +95,7 @@
 
             osc.connect(gain);
             gain.connect(ctx.destination);
+            osc.onended = () => { try { osc.disconnect(); gain.disconnect(); } catch (e) {} };
             osc.start(now);
             osc.stop(now + 0.24);
         } catch (e) {}
@@ -120,6 +122,7 @@
 
             osc.connect(gain);
             gain.connect(ctx.destination);
+            osc.onended = () => { try { osc.disconnect(); gain.disconnect(); } catch (e) {} };
             osc.start(now);
             osc.stop(now + 0.05);
 
@@ -208,20 +211,15 @@
     let lenis = null;
     if (typeof Lenis !== 'undefined') {
         lenis = new Lenis({
-            duration: 1.25,
+            duration: 1.1,
             easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
             orientation: 'vertical',
             gestureOrientation: 'vertical',
             smoothWheel: true,
-            wheelMultiplier: 1.1,
-            touchMultiplier: 1.8
+            wheelMultiplier: 1.0,
+            touchMultiplier: 1.5
         });
-
-        function raf(time) {
-            lenis.raf(time);
-            requestAnimationFrame(raf);
-        }
-        requestAnimationFrame(raf);
+        // Note: Driven exclusively by GSAP ticker at ScrollTrigger setup to prevent dual-RAF stutter
     }
 
     // Helper: Scroll to target scene index (0..4)
@@ -257,31 +255,20 @@
 
     const renderer = new THREE.WebGLRenderer({
         canvas: canvas,
-        antialias: true,
+        antialias: false,
         alpha: false,
-        powerPreference: 'high-performance'
+        powerPreference: 'high-performance',
+        precision: 'mediump'
     });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    const maxDPR = window.innerWidth <= 768 ? 1.0 : Math.min(window.devicePixelRatio, 1.25);
+    renderer.setPixelRatio(maxDPR);
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 0.75; // Subdued, cinematic exposure (removes washed-out white)
-
-    // Atmospheric Warm Low-Key Lighting (Cinema architectural grade)
-    const ambientLight = new THREE.AmbientLight(0xffeedd, 0.40);
-    scene.add(ambientLight);
-
-    const sunLight = new THREE.DirectionalLight(0xf59e0b, 0.32);
-    sunLight.position.set(20, 40, 50);
-    scene.add(sunLight);
-
-    const fillLight = new THREE.DirectionalLight(0x38bdf8, 0.12);
-    fillLight.position.set(-20, -10, 30);
-    scene.add(fillLight);
+    renderer.toneMapping = THREE.NoToneMapping;
 
     // Texture Loader
     const textureLoader = new THREE.TextureLoader();
 
-    // 5 Architectural Room Planes
+    // 5 Architectural Room Planes (Optimized 1x1 quad billboards with MeshBasicMaterial)
     const roomConfigs = [
         {
             id: 'exterior',
@@ -327,11 +314,9 @@
         texture.generateMipmaps = true;
         texture.minFilter = THREE.LinearMipmapLinearFilter;
 
-        const geometry = new THREE.PlaneGeometry(cfg.w, cfg.h, 16, 16);
-        const material = new THREE.MeshStandardMaterial({
+        const geometry = new THREE.PlaneGeometry(cfg.w, cfg.h, 1, 1);
+        const material = new THREE.MeshBasicMaterial({
             map: texture,
-            roughness: 0.8,
-            metalness: 0.05,
             side: THREE.FrontSide
         });
 
@@ -342,26 +327,24 @@
         roomMeshes.push(mesh);
     });
 
-    // 3D Ambient Dust Particles (Atmospheric Sun Motes)
-    const particleCount = 700;
+    // 3D Ambient Dust Particles (Lightweight GPU-animated motes)
+    const particleCount = 120;
     const particleGeometry = new THREE.BufferGeometry();
     const particlePositions = new Float32Array(particleCount * 3);
-    const particleSpeeds = new Float32Array(particleCount);
 
     for (let i = 0; i < particleCount; i++) {
         particlePositions[i * 3 + 0] = (Math.random() - 0.5) * 160;
         particlePositions[i * 3 + 1] = (Math.random() - 0.5) * 80;
-        particlePositions[i * 3 + 2] = 50 - Math.random() * 560; // Spread from +50 to -510 along Z
-        particleSpeeds[i] = 0.02 + Math.random() * 0.04;
+        particlePositions[i * 3 + 2] = 50 - Math.random() * 560;
     }
 
     particleGeometry.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
 
     const particleMaterial = new THREE.PointsMaterial({
         color: 0xf59e0b,
-        size: 0.7,
+        size: 0.65,
         transparent: true,
-        opacity: 0.28,
+        opacity: 0.22,
         blending: THREE.AdditiveBlending
     });
 
@@ -1022,18 +1005,10 @@
             targetState.lookZ
         );
 
-        // 2. Animate dust particles
-        const posAttr = particleGeometry.attributes.position;
-        const positions = posAttr.array;
-        for (let i = 0; i < particleCount; i++) {
-            positions[i * 3 + 1] += particleSpeeds[i] * 0.15; // Slow vertical drift
-            if (positions[i * 3 + 1] > 40) {
-                positions[i * 3 + 1] = -40;
-            }
-        }
-        posAttr.needsUpdate = true;
+        // 2. Animate dust particles on GPU (zero vertex buffer re-uploads)
+        particleSystem.rotation.y += 0.0003;
 
-        // 3. Project 3D Hotspots to 2D Screen Space
+        // 3. Project 3D Hotspots to 2D Screen Space (Hardware-accelerated translate3d)
         const halfWidth = window.innerWidth / 2;
         const halfHeight = window.innerHeight / 2;
 
@@ -1045,8 +1020,10 @@
             const isRelevant = Math.abs(hs.sceneIdx - activeSceneIdx) <= 1 && distZ < 130 && distZ > 8;
 
             if (!isRelevant) {
-                hs.domElement.style.opacity = '0';
-                hs.domElement.style.pointerEvents = 'none';
+                if (hs.domElement.style.opacity !== '0') {
+                    hs.domElement.style.opacity = '0';
+                    hs.domElement.style.pointerEvents = 'none';
+                }
                 return;
             }
 
@@ -1055,18 +1032,21 @@
 
             // If behind camera
             if (tempVec.z > 1) {
-                hs.domElement.style.opacity = '0';
-                hs.domElement.style.pointerEvents = 'none';
+                if (hs.domElement.style.opacity !== '0') {
+                    hs.domElement.style.opacity = '0';
+                    hs.domElement.style.pointerEvents = 'none';
+                }
                 return;
             }
 
             const screenX = tempVec.x * halfWidth + halfWidth;
             const screenY = -tempVec.y * halfHeight + halfHeight;
 
-            hs.domElement.style.left = `${screenX}px`;
-            hs.domElement.style.top = `${screenY}px`;
-            hs.domElement.style.opacity = '1';
-            hs.domElement.style.pointerEvents = 'auto';
+            hs.domElement.style.transform = `translate3d(${screenX}px, ${screenY}px, 0) translate(-50%, -50%)`;
+            if (hs.domElement.style.opacity !== '1') {
+                hs.domElement.style.opacity = '1';
+                hs.domElement.style.pointerEvents = 'auto';
+            }
         });
 
         // 4. Render WebGL Scene
@@ -1075,11 +1055,13 @@
 
     renderLoop();
 
-    // Resize Handler
+    // Resize Handler with capped pixel ratio for buttery 60 FPS
     window.addEventListener('resize', () => {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
+        const maxDPR = window.innerWidth <= 768 ? 1.0 : Math.min(window.devicePixelRatio, 1.25);
+        renderer.setPixelRatio(maxDPR);
     });
 
     // ====================================================
