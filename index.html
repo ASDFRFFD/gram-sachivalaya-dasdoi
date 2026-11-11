@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+    <meta name="theme-color" content="#040609">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>ग्राम सचिवालय दसदोई — 3D डिजिटल वॉकथ्रू | Gram Sachivalaya Dasdoi</title>
+    
+    <!-- Editorial & Architectural Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="intro-active">
+
+    <!-- ====================================================
+         1. OPENING EXPERIENCE — DEDICATED CINEMATIC INTRO
+         ==================================================== -->
+    <div class="intro-viewport" id="intro-viewport">
+        <div class="intro-bg-canvas" id="intro-bg" style="background-image: url('assets/images/exterior.jpg');"></div>
+        <div class="intro-atmospheric-shade"></div>
+        <div class="intro-grid-overlay"></div>
+
+        <div class="intro-editorial-content">
+            <div class="intro-meta-strip">
+                <span class="meta-dot"></span>
+                <span class="meta-caption">उत्तर प्रदेश शासन • पंचायती राज विभाग • जनपद लखनऊ</span>
+            </div>
+
+            <h1 class="intro-hero-title">
+                ग्राम सचिवालय<br>
+                <span class="title-place">दसदोई</span>
+            </h1>
+
+            <p class="intro-hero-desc">
+                विकास खण्ड काकोरी (लखनऊ) का आधिकारिक डिजिटल 3D वास्तु अनुभव।<br>
+                भवन प्रांगण, पंचायत सहायक कक्ष (जन सेवा केंद्र), सभागार एवं प्रशासनिक कक्ष का वर्चुअल अन्वेषण।
+            </p>
+
+            <div class="intro-action-zone">
+                <button class="intro-enter-trigger" id="intro-enter-trigger">
+                    <span class="enter-btn-halo"></span>
+                    <span class="enter-btn-text">डिजिटल सचिवालय में प्रवेश करें</span>
+                    <span class="enter-btn-arrow">➜</span>
+                </button>
+            </div>
+
+            <div class="intro-scroll-indicator">
+                <div class="mouse-wire">
+                    <span class="mouse-scroll-pip"></span>
+                </div>
+                <span>या नीचे स्क्रॉल करें</span>
+            </div>
+        </div>
+
+        <div class="intro-corner-stamp">
+            <span>LOCATION: KAKORI, LUCKNOW</span>
+            <span>COORDINATES: 26.87° N, 80.79° E</span>
+        </div>
+    </div>
+
+    <!-- ====================================================
+         2. MAIN EXPERIENCE — IMMERSIVE THREE.JS 3D CANVAS
+         ==================================================== -->
+    <canvas id="webgl-canvas"></canvas>
+    <div class="cinematic-stage-vignette"></div>
+
+    <!-- 3D Spatial Hotspots Overlay (Projected from 3D coordinate space) -->
+    <div id="spatial-hotspots-container">
+        <!-- Hotspots are dynamically synchronized with 3D scene in app.js -->
+    </div>
+
+    <!-- ====================================================
+         3. FLOATING ARCHITECTURAL NAVIGATION & HUD
+         ==================================================== -->
+    <header class="hud-topbar" id="hud-topbar">
+        <div class="hud-brand" onclick="window.navToSection(0)">
+            <div class="hud-emblem">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" stroke="#f59e0b" stroke-width="2" fill="none"/>
+                    <line x1="12" y1="2" x2="12" y2="22" stroke="#f59e0b" stroke-width="1.5"/>
+                    <line x1="2" y1="12" x2="22" y2="12" stroke="#f59e0b" stroke-width="1.5"/>
+                    <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" stroke="#f59e0b" stroke-width="1"/>
+                    <line x1="4.93" y1="19.07" x2="19.07" y2="4.93" stroke="#f59e0b" stroke-width="1"/>
+                </svg>
+            </div>
+            <div class="hud-title-unit">
+                <h2>ग्राम पंचायत दसदोई</h2>
+                <small>काकोरी, लखनऊ • 3D DIGITAL ENVIRONMENT</small>
+            </div>
+        </div>
+
+        <!-- Floating Section Stepper -->
+        <nav class="hud-stepper">
+            <button class="step-pill active" data-sec="0">01. भवन प्रांगण</button>
+            <button class="step-pill" data-sec="1">02. गलियारा</button>
+            <button class="step-pill" data-sec="2">03. पंचायत सहायक कक्ष</button>
+            <button class="step-pill" data-sec="3">04. मुख्य सभागार</button>
+            <button class="step-pill" data-sec="4">05. प्रधान व सचिव कक्ष</button>
+        </nav>
+
+        <!-- Right Side Utility Controls -->
+        <div class="hud-actions">
+            <!-- Mechanical Audio Synthesizer Toggle -->
+            <button class="audio-hud-btn active" id="audio-toggle-btn" title="मैकेनिकल साउंड ऑन/ऑफ">
+                <div class="sound-wave-bars">
+                    <span></span><span></span><span></span>
+                </div>
+                <span class="audio-label">FX: ON</span>
+            </button>
+
+            <button class="action-hud-btn" onclick="openDrawer('drawer-services')">
+                <span>सेवाएं</span>
+            </button>
+            <button class="action-hud-btn highlight" onclick="openDrawer('drawer-grievance')">
+                <span>जनसुनवाई</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Bottom HUD Status & Live Mini-Map -->
+    <div class="hud-bottom-bar">
+        <!-- Live Position Indicator -->
+        <div class="hud-location-badge">
+            <span class="location-pulse-led"></span>
+            <span id="hud-location-name">भवन प्रांगण एवं शिलालेख</span>
+        </div>
+
+        <!-- Scroll Scrubber Track -->
+        <div class="hud-scrubber-wrapper">
+            <div class="hud-scrubber-progress" id="hud-scrubber-progress"></div>
+        </div>
+
+        <!-- Live Blueprint Floor Plan -->
+        <div class="hud-blueprint-widget" title="क्लिक करके सीधे किसी भी कक्ष में जाएं">
+            <div class="blueprint-widget-header">
+                <span>BLUEPRINT</span>
+                <span class="live-dot">● LIVE</span>
+            </div>
+            <svg class="blueprint-svg-canvas" viewBox="0 0 200 130">
+                <rect x="10" y="10" width="180" height="110" rx="4" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1" stroke-dasharray="3,3"/>
+                
+                <!-- Room 1: Sahayak / Jansewa -->
+                <rect id="bp-sahayak" class="bp-room" x="22" y="18" width="48" height="52" rx="3" onclick="window.navToSection(2)"/>
+                <text x="46" y="44" fill="#94a3b8" font-size="6.5" font-weight="600" text-anchor="middle" pointer-events="none">पं. सहायक</text>
+                <text x="46" y="52" fill="#f59e0b" font-size="5" font-weight="500" text-anchor="middle" pointer-events="none">जन सेवा</text>
+
+                <!-- Room 2: Sabhagar -->
+                <rect id="bp-sabhagar" class="bp-room" x="76" y="16" width="48" height="42" rx="3" onclick="window.navToSection(3)"/>
+                <text x="100" y="40" fill="#94a3b8" font-size="7" font-weight="600" text-anchor="middle" pointer-events="none">सभागार</text>
+
+                <!-- Room 3: Pradhan Office -->
+                <rect id="bp-pradhan" class="bp-room" x="130" y="18" width="48" height="52" rx="3" onclick="window.navToSection(4)"/>
+                <text x="154" y="48" fill="#94a3b8" font-size="7" font-weight="600" text-anchor="middle" pointer-events="none">प्रधान कक्ष</text>
+
+                <!-- Corridor -->
+                <path id="bp-corridor" class="bp-room bp-corridor" d="M72,60 L128,60 L128,95 L72,95 Z" onclick="window.navToSection(1)"/>
+                <text x="100" y="78" fill="#64748b" font-size="6.5" text-anchor="middle" pointer-events="none">गलियारा</text>
+
+                <line x1="88" y1="95" x2="112" y2="95" stroke="#f59e0b" stroke-width="2.5" />
+                <text x="100" y="106" fill="#f59e0b" font-size="6.5" font-weight="700" text-anchor="middle" pointer-events="none">द्वार</text>
+
+                <!-- Dynamic User Beacon -->
+                <circle id="bp-beacon" class="bp-beacon-dot" cx="100" cy="118" r="4.5" />
+            </svg>
+        </div>
+    </div>
+
+    <!-- ====================================================
+         4. CINEMATIC SCI-FI TERMINAL HUD (NO CARDS)
+         Types Hindi text one grapheme at a time using Intl.Segmenter
+         ==================================================== -->
+    <div class="sci-fi-terminal-hud" id="terminal-hud">
+        <!-- Live Telemetry Stream Header -->
+        <div class="terminal-meta-header">
+            <div class="term-status-badge">
+                <span class="term-led-blink"></span>
+                <span class="term-feed-id">SYS.LOC: GRAM_SACHIVALAYA_DASDOI // TELEMETRY: ACTIVE // UP-LKO-09</span>
+            </div>
+            <div class="term-time-clock" id="term-live-time">26.87°N 80.79°E</div>
+        </div>
+
+        <!-- History Buffer (Prior sections shown as minimal dimmed lines) -->
+        <div class="terminal-history-buffer" id="term-history"></div>
+
+        <!-- Live Streaming Section Terminal Feed -->
+        <div class="terminal-active-stage" id="term-active-stage">
+            <div class="term-badge" id="term-badge">SEC.01 // REVEAL</div>
+            <div class="term-headline-container">
+                <h2 class="term-headline" id="term-headline"></h2>
+                <span class="term-cursor" id="term-cursor">█</span>
+            </div>
+            <p class="term-subline" id="term-subline"></p>
+            <ul class="term-telemetry-list" id="term-telemetry"></ul>
+            <div class="term-actions-bar" id="term-actions"></div>
+        </div>
+    </div>
+
+    <!-- ====================================================
+         5. SCROLL-DRIVEN CAMERA & TERMINAL DRIVER TRACK
+         ==================================================== -->
+    <main class="story-scroll-track" id="story-track">
+        <div class="story-intro-spacer"></div>
+        <div class="story-scroll-stop" data-scene="0"></div>
+        <div class="story-scroll-stop" data-scene="1"></div>
+        <div class="story-scroll-stop" data-scene="2"></div>
+        <div class="story-scroll-stop" data-scene="3"></div>
+        <div class="story-scroll-stop" data-scene="4"></div>
+    </main>
+
+    <!-- ====================================================
+         5. SLIDE-OUT ARCHITECTURAL DRAWERS (High-End UX)
+         ==================================================== -->
+
+    <!-- Drawer 1: Services Panel -->
+    <div class="arch-drawer-backdrop" id="drawer-services">
+        <div class="arch-drawer-panel">
+            <div class="drawer-header">
+                <div>
+                    <h3 class="drawer-title">पंचायत सहायक कक्ष — जन सेवा केंद्र (CSC)</h3>
+                    <p class="drawer-sub">प्रभारी पंचायत सहायक: श्री वैभव यादव (DEO • 📞 9005225378)</p>
+                </div>
+                <button class="drawer-close-btn" onclick="closeDrawer('drawer-services')">✕</button>
+            </div>
+
+            <div class="drawer-body">
+                <div class="drawer-grid-items">
+                    <div class="drawer-item-tile">
+                        <div class="tile-icon">📜</div>
+                        <div>
+                            <h4>आय, जाति व निवास प्रमाण पत्र</h4>
+                            <p>ई-डिस्ट्रिक्ट पोर्टल के माध्यम से 7 दिनों में डिजिटल प्रमाण पत्र जारी। आवश्यक: आधार, फोटो, घोषणा पत्र।</p>
+                        </div>
+                    </div>
+
+                    <div class="drawer-item-tile">
+                        <div class="tile-icon">🌾</div>
+                        <div>
+                            <h4>राशन कार्ड ई-केवाईसी एवं आवेदन</h4>
+                            <p>बायोमेट्रिक ई-केवाईसी, नए सदस्य का नाम जोड़ना अथवा संशोधन। आवश्यक: आधार व राशन कार्ड।</p>
+                        </div>
+                    </div>
+
+                    <div class="drawer-item-tile">
+                        <div class="tile-icon">📖</div>
+                        <div>
+                            <h4>परिवार रजिस्टर नकल</h4>
+                            <p>ग्राम पंचायत अभिलेखों से अधिकृत कुटुंब रजिस्टर नकल प्रतिलिपि। विहित शासकीय शुल्क: ₹10।</p>
+                        </div>
+                    </div>
+
+                    <div class="drawer-item-tile">
+                        <div class="tile-icon">👵</div>
+                        <div>
+                            <h4>वृद्धा / विधवा / दिव्यांग पेंशन</h4>
+                            <p>समाज कल्याण विभाग की पेंशन योजनाओं हेतु ऑनलाइन आवेदन एवं आधार प्रमाणीकरण।</p>
+                        </div>
+                    </div>
+
+                    <div class="drawer-item-tile">
+                        <div class="tile-icon">🚜</div>
+                        <div>
+                            <h4>PM किसान सम्मान निधि</h4>
+                            <p>भूमि अंकन (Land Seeding), बायोमेट्रिक ई-केवाईसी एवं बैंक एनपीसीआई खाता सीडिंग।</p>
+                        </div>
+                    </div>
+
+                    <div class="drawer-item-tile">
+                        <div class="tile-icon">🏥</div>
+                        <div>
+                            <h4>आयुष्मान भारत गोल्डन कार्ड</h4>
+                            <p>प्रति वर्ष प्रति परिवार ₹5 लाख तक का निःशुल्क उपचार कार्ड निर्माण व सत्यापन।</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="drawer-footer-action">
+                    <a href="tel:9005225378" class="card-cta-btn highlight" style="text-decoration:none; display:inline-flex;">
+                        <span>📞 पंचायत सहायक को कॉल करें (9005225378)</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Drawer 2: Development Works & Projects -->
+    <div class="arch-drawer-backdrop" id="drawer-projects">
+        <div class="arch-drawer-panel">
+            <div class="drawer-header">
+                <div>
+                    <h3 class="drawer-title">ग्राम विकास परियोजनाएं एवं कार्य प्रगति</h3>
+                    <p class="drawer-sub">ग्राम पंचायत दसदोई के स्वीकृत एवं संचालित निर्माण कार्य</p>
+                </div>
+                <button class="drawer-close-btn" onclick="closeDrawer('drawer-projects')">✕</button>
+            </div>
+
+            <div class="drawer-body">
+                <div class="drawer-timeline-list">
+                    <div class="timeline-card">
+                        <div class="timeline-status-badge success">पूर्ण</div>
+                        <h4>अमृत सरोवर कायाकल्प एवं सुंदरीकरण</h4>
+                        <p>पारंपरिक तालाब का गहरीकरण, चारों ओर पेवर ब्लॉक पाथवे, रेलिंग एवं सघन पौधारोपण।</p>
+                        <div class="timeline-meta">लागत: ₹8,50,000 | 15वां वित्त आयोग</div>
+                    </div>
+
+                    <div class="timeline-card">
+                        <div class="timeline-status-badge progress">प्रगति पर (80%)</div>
+                        <h4>मुख्य बस्ती सीसी रोड व नाली निर्माण</h4>
+                        <p>प्राथमिक विद्यालय से मुख्य मार्ग तक 350 मीटर सीसी रोड एवं ढकी हुई जल निकासी नाली।</p>
+                        <div class="timeline-meta">लागत: ₹5,20,000 | राज्य वित्त आयोग</div>
+                    </div>
+
+                    <div class="timeline-card">
+                        <div class="timeline-status-badge info">अंतिम चरण</div>
+                        <h4>हर घर जल - जल जीवन मिशन</h4>
+                        <p>प्रत्येक परिवार तक स्वच्छ पेयजल पाइपलाइन कनेक्शन एवं ओवरहेड पानी की टंकी।</p>
+                        <div class="timeline-meta">शासकीय केंद्रीय योजना</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Drawer 3: Official Board & Directory -->
+    <div class="arch-drawer-backdrop" id="drawer-board">
+        <div class="arch-drawer-panel">
+            <div class="drawer-header">
+                <div>
+                    <h3 class="drawer-title">सामुदायिक मिलन केन्द्र एवं सचिवालय विवरण</h3>
+                    <p class="drawer-sub">विकास खण्ड काकोरी, जनपद लखनऊ (उत्तर प्रदेश)</p>
+                </div>
+                <button class="drawer-close-btn" onclick="closeDrawer('drawer-board')">✕</button>
+            </div>
+
+            <div class="drawer-body">
+                <div class="officials-card-block">
+                    <h4 class="officials-block-title">आधिकारिक शिलालेख एवं पदाधिकारी:</h4>
+                    <ul class="officials-list">
+                        <li>
+                            <span class="role-badge">ग्राम प्रधान</span>
+                            <strong>श्री राजकुमार यादव</strong>
+                            <small>मिलने का समय: प्रतिदिन 10:00 AM - 1:00 PM</small>
+                        </li>
+                        <li>
+                            <span class="role-badge">ग्राम पंचायत सचिव</span>
+                            <strong>श्री संजीव कुमार</strong>
+                            <small>सचिवालय उपस्थिति: प्रत्येक मंगलवार एवं शुक्रवार</small>
+                        </li>
+                        <li>
+                            <span class="role-badge">पंचायत सहायक / DEO</span>
+                            <strong>श्री वैभव यादव</strong>
+                            <small>📞 <a href="tel:9005225378" style="color:var(--amber-bright); text-decoration:none;">9005225378</a> (10:00 AM - 5:00 PM)</small>
+                        </li>
+                        <li>
+                            <span class="role-badge">सहायक विकास अधिकारी (ADO)</span>
+                            <strong>श्री अजय पाल सिंह</strong>
+                            <small>विकास खण्ड काकोरी कार्यालय</small>
+                        </li>
+                        <li>
+                            <span class="role-badge">खण्ड विकास अधिकारी (BDO)</span>
+                            <strong>श्री मो. आजम अली सिद्दीकी</strong>
+                            <small>विकास खण्ड काकोरी कार्यालय</small>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="notices-card-block">
+                    <h4 class="officials-block-title">महत्वपूर्ण सूचनाएं:</h4>
+                    <div class="notice-pill-item">
+                        <strong>15 नवम्बर 2026:</strong> आगामी ग्राम सभा खुली बैठक (सभागार, 11 AM)
+                    </div>
+                    <div class="notice-pill-item">
+                        <strong>12 नवम्बर 2026:</strong> राशन कार्ड बायोमेट्रिक ई-केवाईसी शिविर (सहायक कक्ष)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Drawer 4: Online Grievance Redressal (जनसुनवाई पेटी) -->
+    <div class="arch-drawer-backdrop" id="drawer-grievance">
+        <div class="arch-drawer-panel">
+            <div class="drawer-header">
+                <div>
+                    <h3 class="drawer-title">ऑनलाइन जनसुनवाई एवं शिकायत पेटी</h3>
+                    <p class="drawer-sub">ग्राम पंचायत दसदोई में अपनी समस्या या विकास सुझाव दर्ज करें</p>
+                </div>
+                <button class="drawer-close-btn" onclick="closeDrawer('drawer-grievance')">✕</button>
+            </div>
+
+            <div class="drawer-body">
+                <form id="grievance-form">
+                    <div class="form-unit">
+                        <label for="g-name">आपका पूरा नाम *</label>
+                        <input type="text" id="g-name" class="arch-input" placeholder="उदा. राम प्रसाद यादव" required>
+                    </div>
+
+                    <div class="form-row-dual">
+                        <div class="form-unit">
+                            <label for="g-phone">मोबाइल नंबर *</label>
+                            <input type="tel" id="g-phone" class="arch-input" placeholder="10 अंक" required pattern="[0-9]{10}">
+                        </div>
+                        <div class="form-unit">
+                            <label for="g-mohalla">टोला / मजरा *</label>
+                            <input type="text" id="g-mohalla" class="arch-input" placeholder="उदा. मुख्य बस्ती" required>
+                        </div>
+                    </div>
+
+                    <div class="form-unit">
+                        <label for="g-category">समस्या का विषय *</label>
+                        <select id="g-category" class="arch-select">
+                            <option value="पेयजल एवं हैंडपंप मरम्मत">पेयजल एवं हैंडपंप मरम्मत</option>
+                            <option value="सड़क एवं नाली सफाई">सड़क एवं नाली सफाई / जलभराव</option>
+                            <option value="स्ट्रीट लाइट / सोलर लाइट">स्ट्रीट लाइट / सोलर लाइट खराबी</option>
+                            <option value="राशन कार्ड / खाद्यान्न वितरण">राशन कार्ड / खाद्यान्न वितरण</option>
+                            <option value="पेंशन एवं सरकारी योजना">पेंशन एवं अन्य योजनाएं</option>
+                            <option value="अन्य सामान्य समस्या">अन्य सामान्य समस्या / सुझाव</option>
+                        </select>
+                    </div>
+
+                    <div class="form-unit">
+                        <label for="g-desc">समस्या का संक्षिप्त विवरण *</label>
+                        <textarea id="g-desc" class="arch-textarea" placeholder="कृपया समस्या या मांग स्पष्ट रूप से लिखें..." required></textarea>
+                    </div>
+
+                    <button type="submit" class="card-cta-btn highlight" style="width:100%; justify-content:center; padding:12px;">
+                        <span>शिकायत दर्ज करें</span> ➜
+                    </button>
+                </form>
+
+                <div id="grievance-success-box" style="display:none;" class="success-ticket-card">
+                    <div class="success-tick-icon">✅</div>
+                    <h4>शिकायत सफलतापूर्वक दर्ज कर ली गई है!</h4>
+                    <p>कृपया अपना आधिकारिक टोकन नंबर नोट कर लें:</p>
+                    <div class="generated-token-num" id="out-token-num">DSD-0000</div>
+                    <small>ग्राम प्रधान एवं सचिव महोदय द्वारा परीक्षण कर शीघ्र निस्तारण किया जाएगा।</small>
+                    <button class="card-cta-btn" style="margin-top:14px;" onclick="resetGrievanceForm()">दूसरी शिकायत दर्ज करें</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====================================================
+         6. CORE VENDOR SCRIPTS (Three.js, Lenis, GSAP)
+         ==================================================== -->
+    <script src="assets/vendor/three.min.js"></script>
+    <script src="assets/vendor/lenis.min.js"></script>
+    <script src="assets/vendor/gsap.min.js"></script>
+    <script src="assets/vendor/ScrollTrigger.min.js"></script>
+
+    <!-- Data & Application Engine -->
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
