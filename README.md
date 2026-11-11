@@ -7,6 +7,7 @@
 [![Web Audio API](https://img.shields.io/badge/Sound-Web%20Audio%20API-orange.svg)](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API)
 [![Mobile Ready](https://img.shields.io/badge/Mobile-100%25%20Responsive-emerald.svg)](#)
 
+> **लाइव वेबसाइट (GitHub Pages)**: [https://asdfrffd.github.io/gram-sachivalaya-dasdoi/](https://asdfrffd.github.io/gram-sachivalaya-dasdoi/)  
 > **अवस्थिति**: ग्राम पंचायत दसदोई, विकास खण्ड काकोरी, जनपद लखनऊ, उत्तर प्रदेश (पिनकोड: 226101)  
 > **भौगोलिक संरेखण**: 26.87° N, 80.79° E
 
